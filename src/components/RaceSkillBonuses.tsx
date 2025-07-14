@@ -1,4 +1,24 @@
-import { type SkillBonuses } from "../interfaces/SkillBonuses";
+
+interface SkillBonuses {
+    alteration?: number,
+    conjuration?: number,
+    destruction?: number,
+    enchanting?: number,
+    illusion?: number,
+    restoration?: number,
+    archery?: number,
+    block?: number,
+    heavyArmor?: number,
+    oneHanded?: number,
+    smithing?: number,
+    twoHanded?: number,
+    alchemy?: number,
+    lightArmor?: number,
+    lockpicking?: number,
+    pickpocket?: number,
+    sneak?: number,
+    speech?: number,
+}
 
 function RaceSkillBonuses({ race }: { race: string }) {
     
