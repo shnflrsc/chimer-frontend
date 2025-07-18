@@ -15,6 +15,7 @@ function Header() {
                 <Link to="/" className="text-white">Home</Link>
                 <Link to="/create" className="text-white">Create</Link>
                 <Link to="/browse" className="text-white">Browse</Link>
+                <Link to="/about" className="text-white">About</Link>
             </nav>
         </header>
     )
