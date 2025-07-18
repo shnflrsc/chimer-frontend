@@ -1,11 +1,6 @@
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
 
 function Home() {
-
-    useEffect(() => {
-        document.title = 'Chimer';
-    })
 
     return (
         <main className="p-8 flex flex-col gap-y-8 items-center">

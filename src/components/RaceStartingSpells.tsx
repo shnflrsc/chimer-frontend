@@ -18,7 +18,7 @@ function RaceStartingSpells({ race }: { race: string }) {
     return (
         <article>
             <h1 className="font-bold">Starting Spells</h1>
-            {raceStartingSpells[race].map((startingSpell) => <p>{startingSpell}</p>)}
+            {raceStartingSpells[race].map((startingSpell) => <p key={ crypto.randomUUID() }>{startingSpell}</p>)}
         </article>
     )
 }

@@ -1,24 +1,45 @@
 
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { nanoid } from "nanoid";
 
-interface BuildForm {
-    name: string,
-    description: string,
-    race: string,
-    standingStone: string
-}
+import { type Build } from "../interfaces/BuildType";
+
+import RaceDescription from "./RaceDescription";
+import RaceSkillBonuses from "./RaceSkillBonuses";
+import RaceStartingSpells from "./RaceStartingSpells";
+import RaceSpecialAbilities from "./RaceSpecialAbilities";
+import StandingStoneDescription from "./StandingStoneDescription";
 
 function BuildForm() {
+    const { register, handleSubmit, watch, formState: { errors } } = useForm<Build>({
+        defaultValues: {
+            properties: {
+                race: "argonian",
+                standingStone: "apprentice"
+            },
+        },
+        
+    })
 
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<BuildForm>()
-    const onSubmit: SubmitHandler<BuildForm> = async (data) => {
+    const propertiesValue = watch("properties");
+    const raceValue = propertiesValue?.race;
+    const standingStoneValue = propertiesValue?.standingStone;
+
+    const onSubmit: SubmitHandler<Build> = async (data) => {
+
+        const payload: Build = {
+            ...data,
+            id: nanoid(),
+            timestamp: new Date().toISOString().slice(0, 19),
+        }
+        
         try {
             const response = await fetch("http://localhost:8080/api/builds", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify(payload),
             });
 
             if (!response.ok) {
@@ -33,15 +54,19 @@ function BuildForm() {
     }
 
     return (
-        <form className="flex flex-col gap-y-6" onSubmit={ handleSubmit(onSubmit) }>
+        <form className="flex flex-col gap-y-6 md:w-5/12 self-center" onSubmit={ handleSubmit(onSubmit) }>
             <h1 className="text-2xl font-bold">Create Build</h1>
             <label className="font-bold" htmlFor="name">Name</label>
-            <input className="shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg p-2 focus:outline-none" type="text" id="name" {...register("name")} />
+            { errors.name && <span className="text-red-600">* This field is required</span> }
+            <input className="shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg p-2 focus:outline-none" type="text" id="name" { ...register("name", { required: true }) } />
+            
             <label className="font-bold" htmlFor="description">Description</label>
-            <textarea className="shadow-[0_3px_10px_rgb(0,0,0,0.2)] resize-none rounded-lg p-2 focus:outline-none h-28" {...register("description")} ></textarea>
+            { errors.description && <span className="text-red-600">* This field is required</span> }
+            <textarea className="shadow-[0_3px_10px_rgb(0,0,0,0.2)] resize-none rounded-lg p-2 focus:outline-none h-28" { ...register("description", { required: true }) } ></textarea>
+            
             <h2 className="text-xl font-bold">Properties</h2>
             <label className="font-bold" htmlFor="race">Race</label>
-            <select className="shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg p-2 focus:outline-none" id="race" {...register("race")}>
+            <select className="shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg p-2 focus:outline-none" id="race" { ...register("properties.race", { required: true }) }>
                 <option value="argonian">Argonian</option>
                 <option value="khajiit">Khajiit</option>
                 <option value="redguard">Redguard</option>
@@ -53,8 +78,14 @@ function BuildForm() {
                 <option value="altmer">Altmer</option>
                 <option value="dunmer">Dunmer</option>
             </select>
+
+            <RaceDescription race={ raceValue } />
+            <RaceSkillBonuses race={ raceValue } />
+            <RaceStartingSpells race={ raceValue } />
+            <RaceSpecialAbilities race={ raceValue } />
+
             <label className="font-bold" htmlFor="standingStone">Standing Stone</label>
-            <select className="shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg p-2 focus:outline-none" id="standingStone" {...register("standingStone")}>
+            <select className="shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg p-2 focus:outline-none" id="standingStone" defaultValue={"apprentice"} {...register("properties.standingStone")}>
                 <option value="apprentice">Apprentice</option>
                 <option value="atronach">Atronach</option>
                 <option value="lady">Lady</option>
@@ -69,6 +100,9 @@ function BuildForm() {
                 <option value="tower">Tower</option>
                 <option value="warrior">Warrior</option>
             </select>
+
+            <StandingStoneDescription standingStone={ standingStoneValue } />
+
             <button className="bg-[#4A5A6A] text-white p-2 rounded-lg w-24" type="submit">Submit</button>
         </form>
     )

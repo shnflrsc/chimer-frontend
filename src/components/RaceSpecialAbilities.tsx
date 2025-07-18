@@ -46,7 +46,7 @@ function RaceSpecialAbilities({ race }: { race: string }) {
         <article>
             <h1 className="font-bold">Special Abilities</h1>
             {Object.entries(raceSpecialAbilities[race]).map(([abilityName, description]) => (
-                    <p className="text-justify">{abilityName} - {description}</p>
+                    <p className="text-justify" key={ crypto.randomUUID() }>{abilityName} - {description}</p>
                 ))}
         </article>
     )

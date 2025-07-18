@@ -5,7 +5,7 @@ import BuildForm from "../components/BuildForm";
 function Create() {
 
     useEffect(() => {
-        document.title = 'Create Build';
+        document.title = 'Chimer | Create Build';
     });
 
     return (
