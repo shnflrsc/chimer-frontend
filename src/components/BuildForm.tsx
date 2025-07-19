@@ -1,8 +1,9 @@
 
+import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { nanoid } from "nanoid";
 
-import { type Build } from "../interfaces/BuildType";
+import { type BuildType } from "../interfaces/BuildType";
 
 import RaceDescription from "./RaceDescription";
 import RaceSkillBonuses from "./RaceSkillBonuses";
@@ -11,23 +12,25 @@ import RaceSpecialAbilities from "./RaceSpecialAbilities";
 import StandingStoneDescription from "./StandingStoneDescription";
 
 function BuildForm() {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<Build>({
+    const { register, handleSubmit, watch, formState: { errors } } = useForm<BuildType>({
         defaultValues: {
             properties: {
                 race: "argonian",
                 standingStone: "apprentice"
             },
         },
-        
     })
 
     const propertiesValue = watch("properties");
     const raceValue = propertiesValue?.race;
     const standingStoneValue = propertiesValue?.standingStone;
 
-    const onSubmit: SubmitHandler<Build> = async (data) => {
+    const [formError, setFormError] = useState<boolean>(false);
+    const [formSuccess, setFormSuccess] = useState<boolean>(false);
 
-        const payload: Build = {
+    const onSubmit: SubmitHandler<BuildType> = async (data) => {
+
+        const payload: BuildType = {
             ...data,
             id: nanoid(),
             timestamp: new Date().toISOString().slice(0, 19),
@@ -46,9 +49,17 @@ function BuildForm() {
                 throw new Error("Failed to submit build");
             }
 
-            const result = await response.json();
-            console.log("Submission result: ", result);
+            // const result = await response.json();
+            // console.log("Submission result: ", result);
+
+            setFormSuccess(true);
+            setFormError(false);
+
         } catch (error) {
+
+            setFormError(true);
+            setFormSuccess(false);
+            
             console.error("Submission error: ", error);
         }
     }
@@ -104,6 +115,9 @@ function BuildForm() {
             <StandingStoneDescription standingStone={ standingStoneValue } />
 
             <button className="bg-[#4A5A6A] text-white p-2 rounded-lg w-24" type="submit">Submit</button>
+
+            { formSuccess ? <p className="text-green-500">Successfully submitted</p> : null }
+            { formError ? <p className="text-red-500">Submission error</p> : null }
         </form>
     )
 }

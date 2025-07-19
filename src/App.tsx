@@ -9,6 +9,7 @@ import Create from "./pages/Create";
 import Browse from "./pages/Browse";
 import About from "./pages/About";
 import Build from "./pages/Build";
+import NotFound from "./pages/NotFound";
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/browse" element={<Browse />} />
           <Route path="/about" element={<About />} />
           <Route path="/builds/:id" element={<Build />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
     </BrowserRouter>
   )
